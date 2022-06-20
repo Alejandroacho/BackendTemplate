@@ -1,265 +1,173 @@
+## Variables used in target commands
+SHELL := /bin/bash
 ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 DBUSER ?= user
 DBPASSWORD ?= password
 HOST ?= "127.0.0.1"
+
+## Variables to make targets more readable
 COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
-DOCKER_FILE_TEXT = docker-compose -f ./Docker/<ENV>/docker-compose.yml
-EQUALS = is equivalent to
 SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
-SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
-PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
+PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
+
+## Settings used in target commands
+IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
+PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-OITNB_SETTINGS = --exclude="/migrations/*" --icons --line-length=79
-ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-glob="**/.env/*" --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
-PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
-SHELL := /bin/bash
+BLACK_SETTINGS = --config="./App/settings/pyproject.toml"
+ISORT_SETTINGS = --settings-path="./App/settings/pyproject.toml"
+BLACK_LOCAL_SETTINGS = --config="./App/App/settings/pyproject.toml"
+ISORT_LOCAL_SETTINGS = --settings-path="./App/App/settings/pyproject.toml"
+STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
-all:
+
+.PHONY: all
+all: ## Main command, just needed to type `make`. Is equivalent to `make up`.
 	@make up
 
-up:
-	${DOCKER_FILE} up
+.PHONY: help
+help:	## Show this help which show all the possible make targets and its description.
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 
-upd:
-	${DOCKER_FILE} up -d
+.PHONY: up
+up: ## Start the containers running the app.
+	@${DOCKER_FILE} up
 
-stop:
-	${DOCKER_FILE} stop
+.PHONY: upd
+upd: ## Start the containers detached.
+	@${DOCKER_FILE} up -d
 
-ps:
-	${DOCKER_FILE} ps
+.PHONY: ps
+ps: ## Show the containers status.
+	@${DOCKER_FILE} ps
 
-bash:
-	${DOCKER_FILE} exec app /bin/bash
+.PHONY: stop
+stop: ## Stop the containers.
+	@${DOCKER_FILE} stop
 
-shell:
-	${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
+.PHONY: bash
+bash: ## Open a bash shell in the django container.
+	@${DOCKER_FILE} exec app /bin/bash
 
-startapp:
-	${COMMAND} "${MANAGE} startapp ${APP}"
+.PHONY: shell
+shell: ## Open the shell_plus of django. You can modify the environment with SETTINGS parameter.
+	@${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
 
-createsuperuser:
-	${COMMAND} "${MANAGE} createsuperuser"
+.PHONY: migrate
+migrate: ## Creates and applies the django migrations. You can modify the environment with SETTINGS parameter.
+	@${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
 
-migrate:
-	${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
-	${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
-
-populate:
+.PHONY: populate
+populate: ## Populates the database with dummy data. You can modify the number of instances created with INSTANCES parameter.
 ifeq (${INSTANCES},)
-	${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
 else
-	${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
 endif
 
-flush:
-	${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
+.PHONY: flush
+flush: ## Flush the database. You can modify the environment with SETTINGS parameter.
+	@${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
 
-show_urls:
+.PHONY: show_urls
+show_urls: ## Show the urls of the app. You can modify grep a string with GREP parameter.
 ifeq (${GREP},)
-	${COMMAND} "${MANAGE} show_urls"
+	@${COMMAND} "${MANAGE} show_urls"
 else
-	${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
+	@${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
 endif
 
-recreate:
-	make flush
-	make migrate
-	make populate
+.PHONY: recreate
+recreate: ## Recreate the the database with dummy data.
+	@make flush
+	@make migrate
+	@make populate
 
-create-test-db:
-	${COMMAND} "${MANAGE} create_test_db"
+.PHONY: create-test-db
+create-test-db: ## Create a test database.
+	@${COMMAND} "${MANAGE} create_test_db"
 
-test:
-	make create-test-db
-ifeq (${COVER}, yes)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
-else ifeq (${COVERHTML}, yes)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
-else ifeq (${APP},)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
+.PHONY: test-migrate
+test-migrate: ## Creates and applies the django migrations for tests.
+	@${TEST_SETTINGS} make migrate
+
+.PHONY: test-populate
+test-populate: ## Populates the database with dummy data for tests.
+	@${TEST_SETTINGS} make populate
+
+.PHONY: test-flush
+test-flush: ## Flush the database for tests.
+	@${TEST_SETTINGS} make flush
+
+.PHONY: test-recreate
+test-recreate: ## Recreate the the database with dummy data for tests.
+	@make test-flush
+	@make create-test-db
+	@make test-migrate
+	@make test-populate
+
+.PHONY: test
+test: ## Run the tests. You can modify the app that will be tested with APP parameter.
+	@make create-test-db
+ifeq (${APP},)
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
 else
-	${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
 
-fast-test:
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} -n auto"
+.PHONY: cover-test
+cover-test: ## Run the tests with coverage.
+	@make create-test-db
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
-test-migrate:
-	${TEST_SETTINGS} make migrate
+.PHONY: html-test
+html-test: ## Run the tests with coverage and html report.
+	@make create-test-db
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
 
-test-populate:
-	${TEST_SETTINGS} make populate
+.PHONY: fast-test
+fast-test: ## Run the tests in parallel
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} -n auto"
 
-test-flush:
-	${TEST_SETTINGS} make flush
+.PHONY: database
+database: ## Access the mysql in the database container. You can modify user/password with DBUSER and DBPASSWORD parameters.
+	@${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
 
-test-recreate:
-	make test-flush
-	make create-test-db
-	make test-migrate
-	make test-populate
+.PHONY: lint
+lint: ## Run the linter
+	@${COMMAND} "black . ${BLACK_SETTINGS}"
 
-freeze:
-	${COMMAND} "pip freeze"
+.PHONY: check-lint
+check-lint: ## Check for linting errors.
+	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
 
-logs:
-	${DOCKER_FILE} logs -f
+.PHONY: check-lint-local
+check-lint-local: ## Check for linting errors in local, useful for CI.
+	@black . ${BLACK_LOCAL_SETTINGS} --check
 
-database:
-	${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
+.PHONY: sort-imports
+sort-imports: ## Sort the imports
+	@${COMMAND} "isort . ${ISORT_SETTINGS}"
 
-lint:
-	${COMMAND} "oitnb . ${OITNB_SETTINGS}"
+.PHONY: check-imports
+check-imports: ## Check for errors on imports ordering.
+	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
-check-lint:
-	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
+.PHONY: check-imports-local
+check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
+	@isort . ${ISORT_LOCAL_SETTINGS} --check
 
-check-lint-local:
-	oitnb --check . ${OITNB_SETTINGS}
-
-sort-imports:
-	${COMMAND} "isort . ${ISORT_SETTINGS}"
-
-check-sort-imports:
-	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
-
-check-sort-imports-local:
-	isort . ${ISORT_SETTINGS} --check
-
-wait-db:
+.PHONY: wait-db
+wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.
 	@while [[ @true ]] ; do \
 		if ${PING_DB} --silent &> /dev/null; then\
 			echo "Database is up!" && break ; \
 		fi ; \
 		echo "Waiting for the database to be up" && sleep 1 ; \
 	done
-
-help:
-	@echo ""
-	@echo "USAGE: make [command]"
-	@echo "You can pass APP, ENV or SETTINGS variable to command likae that:"
-	@echo "ENV=Local make up"
-	@echo "Note that <ENV> must be capitalized and that <SETTINGS> will be <ENV> in lowercase"
-	@echo ""
-	@echo "---------------------------------------------------------------------------------"
-	@echo "Commands:"
-	@echo ""
-	@echo " • up: Start the containers"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE_TEXT} up >"
-	@echo ""
-	@echo " • upd: Start the containers"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE_TEXT} up -d >"
-	@echo ""
-	@echo " • stop: Stop the containers"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE_TEXT} stop >"
-	@echo ""
-	@echo " • ps: Show the running containers"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE_TEXT} ps >"
-	@echo ""
-	@echo " • bash: Open a bash shell in the app container"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE_TEXT} exec app /bin/bash >"
-	@echo ""
-	@echo " • shell: Open a Django shell_plus in the app container"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} shell_plus ${SETTINGS_FLAG_TEXT}' >"
-	@echo ""
-	@echo " • startapp: Create a new app"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} startapp <APP>' >"
-	@echo ""
-	@echo " • createsuperuser: Create a superuser"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} createsuperuser' >"
-	@echo ""
-	@echo " • migrate: Run migrations"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} makemigrations ${SETTINGS_FLAG_TEXT}' >"
-	@echo "                      < ${COMMAND} '${MANAGE} migrate ${SETTINGS_FLAG_TEXT}' >"
-	@echo ""
-	@echo " • populate: Populate the database"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} populate_db -i 50 ${SETTINGS_FLAG_TEXT}' >"
-	@echo ""
-	@echo " • INSTANCES=<int> populate: Populate the database with a number of instances"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} populate_db -i <INSTANCES> ${SETTINGS_FLAG_TEXT}' >"
-	@echo ""
-	@echo " • flush: Flush the database"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} flush ${SETTINGS_FLAG_TEXT}' >"
-	@echo ""
-	@echo " • show_urls: Show the urls of django project"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} show_urls' >"
-	@echo ""
-	@echo " • GREP=<str> show_urls: Show the urls of django project making a grep"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} show_urls | grep <GREP>' >"
-	@echo ""
-	@echo " • recreate: Recreated the database"
-	@echo "   ↳ ${EQUALS} < make flush >"
-	@echo "                      < make migrate >"
-	@echo "                      < make populate >"
-	@echo ""
-	@echo " • create-test-db: Create a test database"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} create_test_db' >"
-	@echo ""
-	@echo " • test: Run tests"
-	@echo "   ↳ ${EQUALS} < make create-test-db >"
-	@echo "                      < ${COMMAND} 'pytest <APP>"
-	@echo "                        ${PYTEST_SETTINGS}' >"
-	@echo ""
-	@echo " • COVER=yes test: Run tests"
-	@echo "   ↳ ${EQUALS} < make create-test-db >"
-	@echo "                      < ${COMMAND} 'pytest <APP>"
-	@echo "                        ${PYTEST_SETTINGS}"
-	@echo "                        ${COVERAGE_SETTINGS}' >"
-	@echo ""
-	@echo " • COVERHTML=yes test: Run tests"
-	@echo "   ↳ ${EQUALS} < make create-test-db >"
-	@echo "                      < ${COMMAND} 'pytest <APP>"
-	@echo "                        ${PYTEST_SETTINGS}"
-	@echo "                        ${COVERAGE_SETTINGS}"
-	@echo "                        --cov-report=html' >"
-	@echo ""
-	@echo " • fast-test: Run tests faster with x-dist pytest extension"
-	@echo "   ↳ ${EQUALS} < make create-test-db >"
-	@echo "                      < ${COMMAND} 'pytest <APP>"
-	@echo "                        ${PYTEST_SETTINGS} -n auto' >"
-	@echo ""
-	@echo " • test-migrate: Run migrations for test environment"
-	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make migrate >"
-	@echo ""
-	@echo " • test-populate: Populate the testing database"
-	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make populate>"
-	@echo ""
-	@echo " • test-flush: Flush the database for tests"
-	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make flush>"
-	@echo ""
-	@echo " • test-recreate: Run recreate for tests"
-	@echo "   ↳ ${EQUALS} < make test-flush >"
-	@echo "                      < make create_test_db >"
-	@echo "                      < make test-migrate >"
-	@echo "                      < make test-populate >"
-	@echo ""
-	@echo " • freeze: Freeze the requirements"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'pip freeze'>"
-	@echo ""
-	@echo " • logs: Show the logs"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} logs -f>"
-	@echo ""
-	@echo " • database: Open a mysql shell"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} exec database mysql -u<DBUSER> -p<DBPASSWORD> >"
-	@echo ""
-	@echo " • lint: Format the code"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . ${OITNB_SETTINGS}' >"
-	@echo ""
-	@echo " • check-lint: Check the code for formatting"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . ${OITNB_SETTINGS}' >"
-	@echo ""
-	@echo " • sort-imports: Sort the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS}' >"
-	@echo ""
-	@echo " • check-sort-imports: Check the order of the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS} --check' >"
-	@echo ""
-	@echo " • help: Show this help"
-	@echo ""
-	@echo "---------------------------------------------------------------------------------"

@@ -1,10 +1,12 @@
 import factory
+from django.db.models import Model
 
 from Emails.models.models import BlackList
+from Emails.models.models import Email
 
 
 class BlackListFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = BlackList
+        model: Model = BlackList
 
-    email = factory.Faker('email')
+    email: Email = factory.Faker("email")
