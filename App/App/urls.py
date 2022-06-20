@@ -14,41 +14,41 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
-urlpatterns: list = [
+urlpatterns = [
     # Django JET URLS
-    path("jet/", include("jet.urls", "jet")),
+    path('jet/', include('jet.urls', 'jet')),
     # Django JET dashboard URLS
-    path("jet/dashboard/", include("jet.dashboard.urls", "jet-dashboard")),
-    path("admin/", admin.site.urls),
-    path("api/", include(("Users.urls", "users"), namespace="users")),
-    path("api/", include(("Emails.urls", "emails"), namespace="emails")),
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
+    path('admin/', admin.site.urls),
+    path('api/', include(('Users.urls', 'users'), namespace='users')),
+    path('api/', include(('Emails.urls', 'emails'), namespace='emails')),
     path(
-        "api/password_reset/",
-        include("django_rest_passwordreset.urls", namespace="password_reset"),
+        'api/password_reset/',
+        include('django_rest_passwordreset.urls', namespace='password_reset'),
     ),
     path(
-        "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
+        'api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'
     ),
     path(
-        "api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+        'api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'
     ),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path(
-        "docs/swagger/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
+        'docs/swagger/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui',
     ),
     path(
-        "docs/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
+        'docs/redoc/',
+        SpectacularRedocView.as_view(url_name='schema'),
+        name='redoc',
     ),
-    path("", include("django_prometheus.urls"), name="django-prometheus"),
+    path("", include('django_prometheus.urls'), name='django-prometheus'),
     re_path(
-        r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}
+        r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}
     ),
     path(
-        "favicon.ico",
-        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+        'favicon.ico',
+        RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')),
     ),
 ]

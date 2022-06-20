@@ -1,7 +1,5 @@
-from django.db.models import Field
-from django.db.models import Model
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
-from rest_framework.relations import RelatedField
 
 from Emails.models.models import Suggestion
 
@@ -11,16 +9,16 @@ class SuggestionEmailSerializer(serializers.Serializer):
     Suggestion serializer
     """
 
-    id: Field = serializers.IntegerField()
-    user_id: Field = serializers.IntegerField()
-    was_sent: Field = serializers.BooleanField()
-    was_read: Field = serializers.BooleanField()
-    subject: Field = serializers.CharField()
-    header: Field = serializers.CharField()
-    blocks: RelatedField = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="id"
+    id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+    was_sent = serializers.BooleanField()
+    was_read = serializers.BooleanField()
+    subject = serializers.CharField()
+    header = serializers.CharField()
+    blocks = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='id'
     )
-    content: Field = serializers.CharField(source="blocks.first.content")
+    content = serializers.CharField(source='blocks.first.content')
 
     class Meta:
-        model: Model = Suggestion
+        model = Suggestion

@@ -13,22 +13,22 @@ on:
       - 'dev'
 
 jobs:
-  Format:
+  Lint:
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
-    - name: 📥 Download black
-      run: pip3 install black==22.3.0
+    - name: 📥 Download oitnb
+      run: pip3 install oitnb==0.2.2
     - name: 📝 Check lint
       run:  make check-lint-local
     - name: 📥 Download isort
       run: pip3 install isort==5.10.1
     - name: 🆎 Check imports order
-      run:  make check-imports-local
+      run:  make check-sort-imports-local
 
   Testing:
-    needs: [Format]
+    needs: [Lint]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout

@@ -8,24 +8,24 @@ from Users.models import User
 
 @pytest.mark.django_db
 class TestUserFactory:
-    def test_user_factory(self) -> None:
+    def test_user_factory(self):
         assert User.objects.count() == 0
-        user: User = UserFactory()
+        user = UserFactory()
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email is not None
         assert user.phone_number is not None
         assert user.password is not None
-        assert user.check_password("password") is True
+        assert user.check_password('password') is True
         assert user.is_admin is False
         assert user.is_verified is False
 
 
 @pytest.mark.django_db
 class TestProfileFactory:
-    def test_profile_factory(self) -> None:
+    def test_profile_factory(self):
         assert Profile.objects.count() == 0
-        profile: Profile = ProfileFactory()
+        profile = ProfileFactory()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None

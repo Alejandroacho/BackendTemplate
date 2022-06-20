@@ -1,38 +1,31 @@
-from datetime import datetime
-
 import factory
 from django.conf import settings
-from django.db.models import Model
 from django.utils import timezone
 from django_rest_passwordreset.models import ResetPasswordToken
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
-from Emails.models.models import Block
 from Emails.models.models import Email
 from Users.factories.user import UserFactory
-from Users.models import User
 
 
 class EmailFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model: Model = Email
+        model = Email
 
-    subject: str = factory.Faker("sentence")
-    header: str = factory.Faker("word")
-    is_test: bool = False
-    to: User = factory.SubFactory(UserFactory)
-    programed_send_date: datetime = timezone.now() + timezone.timedelta(
-        minutes=10
+    subject = factory.Faker('sentence')
+    header = factory.Faker('word')
+    is_test = False
+    to = factory.SubFactory(UserFactory)
+    programed_send_date = timezone.now() + timezone.timedelta(minutes=10)
+    sent_date = factory.Faker(
+        'date_time', tzinfo=timezone.get_current_timezone()
     )
-    sent_date: datetime = factory.Faker(
-        "date_time", tzinfo=timezone.get_current_timezone()
-    )
-    was_sent: bool = False
+    was_sent = False
 
     @factory.post_generation
-    def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
+    def blocks(self, create, extracted, **kwargs):
         if not create:
             return
         if extracted:
@@ -44,32 +37,30 @@ class EmailFactory(factory.django.DjangoModelFactory):
 
 class ResetEmailFactory(EmailFactory):
     class Params:
-        instance: ResetPasswordToken = None
+        instance = None
 
-    subject: str = settings.RESET_PASSWORD_EMAIL_SUBJECT
-    header: str = settings.RESET_PASSWORD_EMAIL_HEADER
-    to: User = factory.LazyAttribute(lambda object: object.instance.user)
-    programed_send_date: datetime = None
+    subject = settings.RESET_PASSWORD_EMAIL_SUBJECT
+    header = settings.RESET_PASSWORD_EMAIL_HEADER
+    to = factory.LazyAttribute(lambda object: object.instance.user)
+    programed_send_date = None
 
     @factory.post_generation
-    def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
-        token: ResetPasswordToken = ResetPasswordToken.objects.filter(
-            user_id=self.to.id
-        ).last()
-        block: Block = ResetPasswordBlockFactory(instance=token)
+    def blocks(self, create, extracted, **kwargs):
+        token = ResetPasswordToken.objects.filter(user_id=self.to.id).last()
+        block = ResetPasswordBlockFactory(instance=token)
         self.blocks.add(block)
 
 
 class VerifyEmailFactory(EmailFactory):
     class Params:
-        instance: User = None
+        instance = None
 
-    subject: str = settings.VERIFY_EMAIL_SUBJECT
-    header: str = settings.VERIFY_EMAIL_HEADER
-    to: User = factory.LazyAttribute(lambda object: object.instance)
-    programed_send_date: datetime = None
+    subject = settings.VERIFY_EMAIL_SUBJECT
+    header = settings.VERIFY_EMAIL_HEADER
+    to = factory.LazyAttribute(lambda object: object.instance)
+    programed_send_date = None
 
     @factory.post_generation
-    def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
-        block: Block = VerifyEmailBlockFactory(user=self.to)
+    def blocks(self, create, extracted, **kwargs):
+        block = VerifyEmailBlockFactory(user=self.to)
         self.blocks.add(block)

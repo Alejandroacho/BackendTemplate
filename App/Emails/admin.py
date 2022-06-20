@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import Model
 
 from Emails.models.models import BlackList
 from Emails.models.models import Block
@@ -9,105 +8,96 @@ from Emails.models.models import Suggestion
 
 
 class BlockAdmin(admin.ModelAdmin):
-    model: Model = Block
-    list_display: tuple = ("id", "title", "show_link")
-    list_display_links: tuple = ("id", "title")
-    list_filter: tuple = (
-        "title",
-        "show_link",
+    model = Block
+    list_display = ('id', 'title', 'show_link')
+    list_display_links = ('id', 'title')
+    list_filter = (
+        'title',
+        'show_link',
     )
-    fieldsets: tuple = (
-        ("Content", {"fields": ("id", "title", "content")}),
-        ("Link", {"fields": ("show_link", "link_text", "link")}),
+    fieldsets = (
+        ('Content', {'fields': ('id', 'title', 'content')}),
+        ('Link', {'fields': ('show_link', 'link_text', 'link')}),
     )
-    readonly_fields: list = [
-        "id",
+    readonly_fields = [
+        'id',
     ]
-    search_fields: tuple = ("title", "id", "link", "link_text", "content")
+    search_fields = ('title', 'id', 'link', 'link_text', 'content')
 
 
 class EmailAdmin(admin.ModelAdmin):
-    model: Model = Email
-    list_display: tuple = (
-        "id",
-        "subject",
-        "to",
-        "is_test",
-        "was_sent",
+    model = Email
+    list_display = (
+        'id',
+        'subject',
+        'to',
+        'is_test',
+        'was_sent',
     )
-    list_filter: tuple = ("to", "is_test", "was_sent")
-    fieldsets: tuple = (
-        ("Content", {"fields": ("id", "subject", "header", "to")}),
-        ("Blocks", {"fields": ("blocks",)}),
-        (
-            "Configuration",
-            {"fields": ("is_test", "programed_send_date")},
-        ),
-        ("Sent information", {"fields": ("was_sent", "sent_date")}),
+    list_filter = ('to', 'is_test', 'was_sent')
+    fieldsets = (
+        ('Content', {'fields': ('id', 'subject', 'header', 'to')}),
+        ('Blocks', {'fields': ('blocks',)}),
+        ('Configuration', {'fields': ('is_test', 'programed_send_date')},),
+        ('Sent information', {'fields': ('was_sent', 'sent_date')}),
     )
-    list_display_links: tuple = ("id", "subject")
-    readonly_fields: list = ["id", "was_sent", "sent_date"]
-    search_fields: tuple = ("to", "id", "subject", "programed_send_date")
-    ordering: tuple = ("is_test", "was_sent", "sent_date", "to")
+    list_display_links = ('id', 'subject')
+    readonly_fields = ['id', 'was_sent', 'sent_date']
+    search_fields = ('to', 'id', 'subject', 'programed_send_date')
+    ordering = ('is_test', 'was_sent', 'sent_date', 'to')
 
 
 class SuggestionAdmin(admin.ModelAdmin):
-    model: Model = Suggestion
-    list_display: tuple = (
-        "id",
-        "user",
-        "subject",
-        "was_sent",
-        "was_read",
+    model = Suggestion
+    list_display = (
+        'id',
+        'user',
+        'subject',
+        'was_sent',
+        'was_read',
     )
-    list_filter: tuple = ("subject", "user", "was_read", "was_sent")
+    list_filter = ('subject', 'user', 'was_read', 'was_sent')
 
-    fieldsets: tuple = (
-        ("Content", {"fields": ("id", "user", "subject", "header")}),
-        ("Blocks", {"fields": ("blocks",)}),
-        (
-            "Configuration",
-            {"fields": ("to", "was_read", "was_sent")},
-        ),
-        ("Sent information", {"fields": ("sent_date",)}),
+    fieldsets = (
+        ('Content', {'fields': ('id', 'user', 'subject', 'header')}),
+        ('Blocks', {'fields': ('blocks',)}),
+        ('Configuration', {'fields': ('to', 'was_read', 'was_sent')},),
+        ('Sent information', {'fields': ('sent_date',)}),
     )
-    list_display_links: tuple = ("id", "user")
-    readonly_fields: list = ["id", "was_sent", "sent_date"]
-    search_fields: tuple = ("id", "user")
-    ordering: tuple = ("was_sent", "was_read")
+    list_display_links = ('id', 'user')
+    readonly_fields = ['id', 'was_sent', 'sent_date']
+    search_fields = ('id', 'user')
+    ordering = ('was_sent', 'was_read')
 
 
 class BlackListAdmin(admin.ModelAdmin):
-    model: Model = BlackList
-    list_display: tuple = ("id", "email")
-    list_display_links: tuple = ("id", "email")
-    readonly_fields: list = ["id"]
-    search_fields: tuple = ("email", "id")
-    ordering: tuple = ("email",)
+    model = BlackList
+    list_display = ('id', 'email')
+    list_display_links = ('id', 'email')
+    readonly_fields = ['id']
+    search_fields = ('email', 'id')
+    ordering = ('email',)
 
 
 class NotificationAdmin(admin.ModelAdmin):
-    model: Model = Email
-    list_display: tuple = (
-        "id",
-        "subject",
-        "is_test",
-        "was_sent",
+    model = Email
+    list_display = (
+        'id',
+        'subject',
+        'is_test',
+        'was_sent',
     )
-    list_filter: tuple = ("is_test", "was_sent")
-    fieldsets: tuple = (
-        ("Content", {"fields": ("id", "subject", "header")}),
-        ("Blocks", {"fields": ("blocks",)}),
-        (
-            "Configuration",
-            {"fields": ("is_test", "programed_send_date")},
-        ),
-        ("Sent information", {"fields": ("was_sent", "sent_date")}),
+    list_filter = ('is_test', 'was_sent')
+    fieldsets = (
+        ('Content', {'fields': ('id', 'subject', 'header')}),
+        ('Blocks', {'fields': ('blocks',)}),
+        ('Configuration', {'fields': ('is_test', 'programed_send_date')},),
+        ('Sent information', {'fields': ('was_sent', 'sent_date')}),
     )
-    list_display_links: tuple = ("id", "subject")
-    readonly_fields: list = ["id", "was_sent", "sent_date"]
-    search_fields: tuple = ("id", "subject", "programed_send_date")
-    ordering: tuple = ("is_test", "was_sent", "sent_date")
+    list_display_links = ('id', 'subject')
+    readonly_fields = ['id', 'was_sent', 'sent_date']
+    search_fields = ('id', 'subject', 'programed_send_date')
+    ordering = ('is_test', 'was_sent', 'sent_date')
 
 
 admin.site.register(Email, EmailAdmin)
