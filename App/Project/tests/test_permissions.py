@@ -2,12 +2,12 @@ import pytest
 from mock import MagicMock
 from mock import PropertyMock
 
-from App.permissions import IsActionAllowed
-from App.permissions import IsAdmin
-from App.permissions import IsProfileOwner
-from App.permissions import IsSameUserId
-from App.permissions import IsUserOwner
-from App.permissions import IsVerified
+from Project.permissions import IsActionAllowed
+from Project.permissions import IsAdmin
+from Project.permissions import IsProfileOwner
+from Project.permissions import IsSameUserId
+from Project.permissions import IsUserOwner
+from Project.permissions import IsVerified
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

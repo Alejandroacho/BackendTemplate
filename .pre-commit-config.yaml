@@ -7,7 +7,7 @@ repos:
         description: Any color you like
         entry: black
         args: [
-          --config=./App/App/settings/pyproject.toml,
+          --config=./App/Project/settings/pyproject.toml,
           --check
         ]
         files: ^App/
@@ -23,7 +23,7 @@ repos:
         description: Isort your imports, so you don't have to
         entry: isort
         args: [
-          --settings-path=./App/App/settings/pyproject.toml,
+          --settings-path=./App/Project/settings/pyproject.toml,
           --check
         ]
         files: ^App/

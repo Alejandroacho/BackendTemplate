@@ -10,7 +10,7 @@ from django.db.models.fields import Field
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from App.utils import log_information
+from Project.utils import log_information
 
 
 class AbstractEmailFunctionClass(Model):

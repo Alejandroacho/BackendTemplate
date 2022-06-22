@@ -4,7 +4,7 @@ import pytest
 from django.core.management import call_command
 from django.test import override_settings
 
-from App.management.commands.populate_db import Command as PopulateCommand
+from Project.management.commands.populate_db import Command as PopulateCommand
 from Emails.models.models import Email
 from Emails.models.models import Suggestion
 from Users.factories.user import UserFactory

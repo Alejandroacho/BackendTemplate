@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from App.settings.jet_settings import *
+from Project.settings.jet_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,7 +43,7 @@ THIRD_PARTY_APPS: list = [
     "phonenumber_field",
 ]
 
-LOCAL_APPS: list = ["App", "Users", "Emails"]
+LOCAL_APPS: list = ["Project", "Users", "Emails"]
 
 INSTALLED_APPS: list = (
     SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -90,12 +90,12 @@ SPECTACULAR_SETTINGS: dict = {
 }
 
 
-ROOT_URLCONF: str = "App.urls"
+ROOT_URLCONF: str = "Project.urls"
 
 TEMPLATES: list = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "/App/App/static")],
+        "DIRS": [os.path.join(BASE_DIR, "/App/Project/static")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -108,7 +108,7 @@ TEMPLATES: list = [
     },
 ]
 
-WSGI_APPLICATION: str = "App.wsgi.application"
+WSGI_APPLICATION: str = "Project.wsgi.application"
 
 CACHES: dict = {
     "default": {
@@ -176,7 +176,7 @@ USE_TZ: bool = True
 
 STATIC_URL: str = "/static/"
 
-MEDIA_DIRS: str = os.path.join(BASE_DIR, "/App/App/mMdia")
+MEDIA_DIRS: str = os.path.join(BASE_DIR, "/App/Project/media")
 MEDIA_URL: str = "/media/"
 
 

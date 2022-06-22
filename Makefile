@@ -10,19 +10,19 @@ HOST ?= "127.0.0.1"
 COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
-SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
+SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
 PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 ## Settings used in target commands
 IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
-PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
+PYTEST_SETTINGS = --reuse-db --ds=Project.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-BLACK_SETTINGS = --config="./App/settings/pyproject.toml"
-ISORT_SETTINGS = --settings-path="./App/settings/pyproject.toml"
-BLACK_LOCAL_SETTINGS = --config="./App/App/settings/pyproject.toml"
-ISORT_LOCAL_SETTINGS = --settings-path="./App/App/settings/pyproject.toml"
+BLACK_SETTINGS = --config="./Project/settings/pyproject.toml"
+ISORT_SETTINGS = --settings-path="./Project/settings/pyproject.toml"
+BLACK_LOCAL_SETTINGS = --config="./App/Project/settings/pyproject.toml"
+ISORT_LOCAL_SETTINGS = --settings-path="./App/Project/settings/pyproject.toml"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
 

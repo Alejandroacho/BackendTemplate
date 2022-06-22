@@ -8,10 +8,10 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from App.pagination import ListResultsSetPagination
-from App.permissions import IsAdmin
-from App.permissions import IsSameUserId
-from App.permissions import IsVerified
+from Project.pagination import ListResultsSetPagination
+from Project.permissions import IsAdmin
+from Project.permissions import IsSameUserId
+from Project.permissions import IsVerified
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer

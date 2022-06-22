@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from App.settings.django.default_settings import *
+from Project.settings.django.default_settings import *
 
 
 URL: str = "http://localhost:8000"
@@ -14,7 +14,7 @@ ENVIRONMENT_NAME: str = "dev"
 ALLOWED_HOSTS: list = []
 
 
-STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "/App/App/static"),)
+STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "/App/Project/static"),)
 STATIC_ROOT: str = os.path.join(BASE_DIR, "staticfiles")
 
 # Database

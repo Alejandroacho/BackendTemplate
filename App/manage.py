@@ -9,7 +9,7 @@ def main():
 
     if not os.environ.get("DJANGO_SETTINGS_MODULE"):
         os.environ.setdefault(
-            "DJANGO_SETTINGS_MODULE", "App.settings.django.local_settings"
+            "DJANGO_SETTINGS_MODULE", "Project.settings.django.local_settings"
         )
 
     try:

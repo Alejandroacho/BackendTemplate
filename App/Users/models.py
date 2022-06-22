@@ -15,7 +15,7 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.views import View
 
-from App.storage import image_file_upload
+from Project.storage import image_file_upload
 from Users.choices import GenderChoices
 from Users.choices import PreferredLanguageChoices
 

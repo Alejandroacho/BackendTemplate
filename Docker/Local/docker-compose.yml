@@ -108,7 +108,7 @@ services:
     container_name: prometheus
     image: prom/prometheus:v2.1.0
     volumes:
-      - ../../App/App/settings/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../../App/Project/settings/prometheus.yml:/etc/prometheus/prometheus.yml
     command: --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
