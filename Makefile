@@ -21,8 +21,8 @@ COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 BLACK_SETTINGS = --config="./Project/settings/pyproject.toml"
 ISORT_SETTINGS = --settings-path="./Project/settings/pyproject.toml"
-BLACK_LOCAL_SETTINGS = --config="./App/Project/settings/pyproject.toml"
-ISORT_LOCAL_SETTINGS = --settings-path="./App/Project/settings/pyproject.toml"
+BLACK_LOCAL_SETTINGS = --config="./Project/settings/pyproject.toml"
+ISORT_LOCAL_SETTINGS = --settings-path="./Project/settings/pyproject.toml"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
 

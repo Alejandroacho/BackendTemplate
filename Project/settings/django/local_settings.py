@@ -14,9 +14,6 @@ ENVIRONMENT_NAME: str = "dev"
 ALLOWED_HOSTS: list = []
 
 
-STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "/App/Project/static"),)
-STATIC_ROOT: str = os.path.join(BASE_DIR, "staticfiles")
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

@@ -8,13 +8,14 @@ services:
       dockerfile: ./Docker/Local/Dockerfile
     image: &app app
     restart: always
-    command: python3 start.py --service Django-App
+    command: python3 /Project/start.py --service Django-App
     env_file: &envfile
       - ../../Envs/local.env
     ports:
       - 8000:8000
     volumes:
-      - ../../App:/App
+      - ../../Apps:/Apps
+      - ../../Project:/Project
       - ../../Requirements:/Requirements
     depends_on:
       - database
@@ -26,7 +27,7 @@ services:
     restart: always
     env_file: *envfile
     volumes:
-      - ~/.mdbdata/App:/var/lib/mysql
+      - ~/.mdbdata/BackendTemplate:/var/lib/mysql
     ports:
       - 3306:3306
     expose:
@@ -38,7 +39,7 @@ services:
     ports:
       - 6378:6379
     volumes:
-      - ~/.mdbdata/App/redisdata:/data
+      - ~/.mdbdata/BackendTemplate/redisdata:/data
     depends_on:
       - database
 
@@ -50,9 +51,10 @@ services:
     image: *app
     restart: always
     env_file: *envfile
-    command: python3 start.py --service Celery-Worker
+    command: python3 /Project/start.py --service Celery-Worker
     volumes:
-      - ../../App:/App
+      - ../../Apps:/Apps
+      - ../../Project:/Project
     depends_on:
       - rabbitmq
 
@@ -63,9 +65,10 @@ services:
       dockerfile: ./Docker/Local/Dockerfile
     image: *app
     env_file: *envfile
-    command: python3 start.py --service Celery-Beat
+    command: python3 /Project/start.py --service Celery-Beat
     volumes:
-      - ../../App:/App
+      - ../../Apps:/Apps
+      - ../../Project:/Project
     depends_on:
       - celery-worker
 
@@ -87,7 +90,7 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - ~/.mdbdata/App/rabbitmq_data:/data
+      - ~/.mdbdata/BackendTemplate/rabbitmq_data:/data
     depends_on:
       - database
 
@@ -98,8 +101,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ~/.mdbdata/App/grafana_data:/var/lib/grafana
-      - ~/.mdbdata/App/grafana/provisioning/:/etc/grafana/provisioning/
+      - ~/.mdbdata/BackendTemplate/grafana_data:/var/lib/grafana
+      - ~/.mdbdata/BackendTemplate/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
     depends_on:
       - database
@@ -108,7 +111,7 @@ services:
     container_name: prometheus
     image: prom/prometheus:v2.1.0
     volumes:
-      - ../../App/Project/settings/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../../Project/settings/prometheus.yml:/etc/prometheus/prometheus.yml
     command: --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
@@ -120,7 +123,7 @@ services:
     image: dbeaver/cloudbeaver
     restart: always
     volumes:
-      - ~/.mdbdata/App/cloudbeaver:/opt/cloudbeaver/workspace
+      - ~/.mdbdata/BackendTemplate/cloudbeaver:/opt/cloudbeaver/workspace
     ports:
       - 8081:8978
     depends_on:

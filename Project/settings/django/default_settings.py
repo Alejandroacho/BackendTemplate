@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 from Project.settings.jet_settings import *
@@ -6,6 +7,7 @@ from Project.settings.jet_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR: str = Path(__file__).resolve().parent.parent.parent.parent
+sys.path.insert(0, os.path.join(BASE_DIR, 'Apps'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -95,7 +97,7 @@ ROOT_URLCONF: str = "Project.urls"
 TEMPLATES: list = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "/App/Project/static")],
+        "DIRS": [os.path.join(BASE_DIR, "/Project/static")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -176,7 +178,7 @@ USE_TZ: bool = True
 
 STATIC_URL: str = "/static/"
 
-MEDIA_DIRS: str = os.path.join(BASE_DIR, "/App/Project/media")
+MEDIA_DIRS: str = os.path.join(BASE_DIR, "/Project/media")
 MEDIA_URL: str = "/media/"
 
 
