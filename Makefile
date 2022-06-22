@@ -116,7 +116,7 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 test: ## Run the tests. You can modify the app that will be tested with APP parameter.
 	@make create-test-db
 ifeq (${APP},)
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest Apps Project ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
