@@ -15,8 +15,7 @@ TEST_SETTINGS = SETTINGS=test
 PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 ## Settings used in target commands
-IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
-PYTEST_SETTINGS = --reuse-db --ds=Project.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
+PYTEST_SETTINGS = -c="./Project/settings/pyproject.toml"
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 BLACK_SETTINGS = --config="./Project/settings/pyproject.toml"
@@ -116,7 +115,7 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 test: ## Run the tests. You can modify the app that will be tested with APP parameter.
 	@make create-test-db
 ifeq (${APP},)
-	@${COMMAND} "pytest Apps Project ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
@@ -124,12 +123,12 @@ endif
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
 	@make create-test-db
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+	@${COMMAND} "pytest ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
 .PHONY: html-test
 html-test: ## Run the tests with coverage and html report.
 	@make create-test-db
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
+	@${COMMAND} "pytest ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel
@@ -141,27 +140,27 @@ database: ## Access the mysql in the database container. You can modify user/pas
 
 .PHONY: lint
 lint: ## Run the linter
-	@${COMMAND} "black . ${BLACK_SETTINGS}"
+	@${COMMAND} "black Apps Project ${BLACK_SETTINGS}"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
+	@${COMMAND} "black Apps Project ${BLACK_SETTINGS} --check"
 
 .PHONY: check-lint-local
 check-lint-local: ## Check for linting errors in local, useful for CI.
-	@black . ${BLACK_LOCAL_SETTINGS} --check
+	@black Apps Project ${BLACK_LOCAL_SETTINGS} --check
 
 .PHONY: sort-imports
 sort-imports: ## Sort the imports
-	@${COMMAND} "isort . ${ISORT_SETTINGS}"
+	@${COMMAND} "isort Apps Project ${ISORT_SETTINGS}"
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
-	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+	@${COMMAND} "isort Apps Project ${ISORT_SETTINGS} --check"
 
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
-	@isort . ${ISORT_LOCAL_SETTINGS} --check
+	@isort Apps Project ${ISORT_LOCAL_SETTINGS} --check
 
 .PHONY: wait-db
 wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.

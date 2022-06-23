@@ -12,3 +12,11 @@ use_parentheses = true
 include_trailing_comma = true
 multi_line_output = 3
 known_third_party = ['django', 'pytest']
+
+[tool.pytest.ini_options]
+addopts = "--reuse-db -W ignore::django.utils.deprecation.RemovedInDjango41Warning -W ignore::DeprecationWarning -p no:cacheprovider --reuse-db --ds=Project.settings.django.test_settings"
+minversion = "7.0"
+testpaths = [
+    "Project",
+    "App",
+]
