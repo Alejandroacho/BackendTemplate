@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models.fields import Field
 from django.db.models.fields.related import ForeignObject
 from django.utils import timezone
-
 from Emails import factories
 from Emails.choices import CommentType
 from Emails.models.abstracts import AbstractEmailClass

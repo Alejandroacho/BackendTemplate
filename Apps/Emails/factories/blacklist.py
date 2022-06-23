@@ -1,6 +1,5 @@
 import factory
 from django.db.models import Model
-
 from Emails.models.models import BlackList
 from Emails.models.models import Email
 

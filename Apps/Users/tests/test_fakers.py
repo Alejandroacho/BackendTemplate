@@ -1,5 +1,4 @@
 import pytest
-
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import FemaleProfileFaker
 from Users.fakers.profile import KidProfileFaker

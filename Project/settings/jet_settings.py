@@ -1,5 +1,4 @@
 from django.utils.html import format_html
-
 from Project.settings.labels_with_svg import black_list_with_icon
 from Project.settings.labels_with_svg import block_label_with_icon
 from Project.settings.labels_with_svg import email_label_with_icon

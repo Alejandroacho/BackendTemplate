@@ -5,7 +5,6 @@ from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.response import Response
 from rest_framework.test import APIClient
-
 from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker

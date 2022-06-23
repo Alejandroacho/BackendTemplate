@@ -4,12 +4,11 @@ from logging import Logger
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandParser
-from tqdm import tqdm
-from tqdm import trange as progress
-
 from Emails.choices import CommentType
 from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
+from tqdm import tqdm
+from tqdm import trange as progress
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.models import User

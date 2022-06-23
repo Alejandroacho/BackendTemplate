@@ -4,7 +4,6 @@ import factory
 import factory.fuzzy
 from django.db.models import ImageField
 from django.db.models import Model
-
 from Users.factories.user import UserFactory
 from Users.models import Profile
 from Users.models import User

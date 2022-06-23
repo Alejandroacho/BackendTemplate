@@ -1,9 +1,8 @@
 from django_rest_passwordreset.models import ResetPasswordToken
-
-from Project.utils import log_email_action
 from Emails.factories.email import ResetEmailFactory
 from Emails.factories.email import VerifyEmailFactory
 from Emails.models.models import Email
+from Project.utils import log_email_action
 from Users.models import User
 
 

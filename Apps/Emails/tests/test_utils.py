@@ -1,7 +1,6 @@
 import pytest
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
-
 from Emails.models.models import Email
 from Emails.utils import send_email
 from Users.fakers.user import UserFaker

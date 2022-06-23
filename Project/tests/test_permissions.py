@@ -1,7 +1,6 @@
 import pytest
 from mock import MagicMock
 from mock import PropertyMock
-
 from Project.permissions import IsActionAllowed
 from Project.permissions import IsAdmin
 from Project.permissions import IsProfileOwner

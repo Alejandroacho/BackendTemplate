@@ -5,7 +5,6 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
 from django_rest_passwordreset.models import ResetPasswordToken
-
 from Users.models import Profile
 from Users.models import User
 

@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
-
 from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory

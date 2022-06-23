@@ -13,9 +13,8 @@ from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
-from rest_framework.views import View
-
 from Project.storage import image_file_upload
+from rest_framework.views import View
 from Users.choices import GenderChoices
 from Users.choices import PreferredLanguageChoices
 

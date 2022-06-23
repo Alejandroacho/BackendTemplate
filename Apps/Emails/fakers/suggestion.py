@@ -2,7 +2,6 @@ from datetime import datetime
 
 import factory
 from django.db.models import Model
-
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.fakers.block import BlockTestFaker

@@ -1,4 +1,4 @@
-FROM python:3.9.10
+FROM python:3.10.5
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 WORKDIR /

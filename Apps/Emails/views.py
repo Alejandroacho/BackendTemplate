@@ -1,20 +1,19 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from Emails.factories.suggestion import SuggestionEmailFactory
+from Emails.models.models import Suggestion
+from Emails.serializers import SuggestionEmailSerializer
+from Project.pagination import ListResultsSetPagination
+from Project.permissions import IsAdmin
+from Project.permissions import IsSameUserId
+from Project.permissions import IsVerified
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from Project.pagination import ListResultsSetPagination
-from Project.permissions import IsAdmin
-from Project.permissions import IsSameUserId
-from Project.permissions import IsVerified
-from Emails.factories.suggestion import SuggestionEmailFactory
-from Emails.models.models import Suggestion
-from Emails.serializers import SuggestionEmailSerializer
 from Users.models import User
 
 

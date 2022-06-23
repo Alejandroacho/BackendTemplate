@@ -2,7 +2,6 @@ from datetime import datetime
 
 import factory
 from django.db.models import Model
-
 from Emails.factories.email import EmailFactory
 from Emails.fakers.block import BlockTestFaker
 from Users.factories.user import UserFactory

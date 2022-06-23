@@ -3,7 +3,6 @@ from django.db.utils import IntegrityError
 from mock import MagicMock
 from mock import PropertyMock
 from rest_framework.serializers import ValidationError
-
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

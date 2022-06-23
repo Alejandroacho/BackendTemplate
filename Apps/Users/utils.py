@@ -5,7 +5,6 @@ import re as regex
 from django.conf import settings
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
-
 from Users.models import User
 
 
