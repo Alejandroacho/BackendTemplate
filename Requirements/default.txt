@@ -18,9 +18,7 @@ drf-spectacular==0.21.0
 drf-spectacular[sidecar]==0.21.0
 factory-boy==3.2.1
 feedparser==6.0.8
-freezegun==1.1.0
 markdown==3.3.4
-mock==4.0.3
 Pillow==9.0.1
 phonenumbers==8.12.42
 prometheus_client==0.12.0
