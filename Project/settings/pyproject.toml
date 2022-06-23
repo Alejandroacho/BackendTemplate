@@ -18,5 +18,5 @@ addopts = "--reuse-db -W ignore::django.utils.deprecation.RemovedInDjango41Warni
 minversion = "7.0"
 testpaths = [
     "Project",
-    "App",
+    "Apps",
 ]
