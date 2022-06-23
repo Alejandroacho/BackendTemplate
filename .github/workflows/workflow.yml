@@ -41,8 +41,25 @@ jobs:
     - name: ✅ Test
       run: make test
 
-  Docker:
+  Versioning:
     needs: [Testing]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        name: 🔏 Generates release and tag for code versioning
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: patch
+          tag_prefix: v
+      - name: 📣 Check versioning
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
+
+  Docker:
+    needs: [Versioning]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -65,19 +82,6 @@ jobs:
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.base_ref }}-latest,
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
-
-  Versioning:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - id: release
-        name: 🔏 Generates release and tag for code versioning
-        uses: rymndhng/release-on-push-action@master
-      - name: 📣 Check versioning
-        run: |
-          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
-          echo "Got release version ${{ steps.release.outputs.version }}"
 
   Deploy:
     needs: [Docker]
