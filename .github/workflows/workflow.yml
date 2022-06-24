@@ -1,11 +1,6 @@
 name: Main workflow
 
 on:
-  push:
-    branches:
-      - 'master'
-      - 'staging'
-      - 'dev'
   pull_request:
     branches:
       - 'master'
@@ -40,7 +35,7 @@ jobs:
     - name: ✅ Test
       run: make test
 
-  Docker:
+  Docker-Tag:
     needs: [Testing]
     runs-on: ubuntu-latest
     steps:
@@ -56,17 +51,45 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: 🏗️ Build and push
+      if: ${{ github.ref == 'refs/heads/master' }}
       uses: docker/build-push-action@v3
       with:
         context: .
         file: ./Docker/Local/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:latest,
+          ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DOCKERHUB_REPONAME}}:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
+    - name: 🏗️ Build and push
+      if: ${{ github.ref != 'refs/heads/master' }}
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: ./Docker/Local/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.base_ref }}-latest
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
+  Versioning:
+    needs: [Docker-Tag]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        name: 🔏 Generates release and tag for code versioning
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: patch
+          tag_prefix: v
+      - name: 📣 Check versioning
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
+
   Deploy:
-    needs: [Docker]
+    needs: [Versioning]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
