@@ -57,7 +57,9 @@ jobs:
         file: ./Docker/Local/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.base_ref }}-latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/
+          ${{ secrets.DOCKERHUB_REPONAME }}
+          :${{ github.base_ref }}-latest-${{ github.sha }}
 
   Versioning:
     needs: [Docker]
@@ -77,7 +79,7 @@ jobs:
           echo "Got release version ${{ steps.release.outputs.version }}"
 
   Deploy:
-    needs: [Docker]
+    needs: [Versioning]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
