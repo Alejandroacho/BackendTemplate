@@ -1,0 +1,23 @@
+changelog:
+  categories:
+    - title: 🛠 Breaking Changes
+      labels:
+        - release:major
+    - title: 🎉 Exciting New Features
+      labels:
+        - Feature
+    - title: 🐛 Bugs fixed
+      labels:
+        - Bug
+    - title: ⚙️ DevOps
+      labels:
+        - DevOps
+    - title: 🔄 Refactor done
+      labels:
+        - Refactor
+    - title: 📝 Documentation changes
+      labels:
+        - Documentation
+    - title: 🏗️ Other Changes
+      labels:
+        - "*"
