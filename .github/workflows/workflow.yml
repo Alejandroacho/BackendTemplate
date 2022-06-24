@@ -35,7 +35,7 @@ jobs:
     - name: ✅ Test
       run: make test
 
-  Docker:
+  Docker-Tag:
     needs: [Testing]
     runs-on: ubuntu-latest
     steps:
@@ -51,18 +51,28 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: 🏗️ Build and push
+      if: ${{ github.ref == 'refs/heads/master' }}
       uses: docker/build-push-action@v3
       with:
         context: .
         file: ./Docker/Local/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/
-          ${{ secrets.DOCKERHUB_REPONAME }}
-          :${{ github.base_ref }}-latest-${{ github.sha }}
+          ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DOCKERHUB_REPONAME}}:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
+    - name: 🏗️ Build and push
+      if: ${{ github.ref != 'refs/heads/master' }}
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: ./Docker/Local/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.base_ref }}-latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
   Versioning:
-    needs: [Docker]
+    needs: [Docker-Tag]
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
