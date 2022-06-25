@@ -178,7 +178,7 @@ USE_TZ: bool = True
 
 STATIC_URL: str = "/static/"
 
-MEDIA_DIRS: str = os.path.join(BASE_DIR, "/Project/media")
+MEDIA_ROOT: str = os.path.join(BASE_DIR, "Project/")
 MEDIA_URL: str = "/media/"
 
 
