@@ -9,6 +9,7 @@ from django.db.models import Model
 from django.db.models.fields import Field
 from django.template.loader import render_to_string
 from django.utils import timezone
+from Emails.choices import EmailAffair
 from Project.utils import log_information
 
 
@@ -66,6 +67,11 @@ class AbstractEmailFunctionClass(Model):
 
 class AbstractEmailClass(AbstractEmailFunctionClass):
     header: Field = models.CharField(max_length=100, null=True)
+    affair: Field = models.CharField(
+        max_length=100,
+        choices=EmailAffair.choices,
+        default=EmailAffair.NOTIFICATION.value,
+    )
     sent_date: Field = models.DateTimeField(null=True)
     was_sent: Field = models.BooleanField(default=False, editable=False)
     blocks: Field = models.ManyToManyField(

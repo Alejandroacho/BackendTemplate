@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import factory
+import factory.fuzzy
 from django.conf import settings
 from django.db.models import Model
 from django.utils import timezone
@@ -22,6 +23,16 @@ class EmailFactory(factory.django.DjangoModelFactory):
     header: str = factory.Faker("word")
     is_test: bool = False
     to: User = factory.SubFactory(UserFactory)
+    affair: str =  factory.fuzzy.FuzzyChoice(
+        (
+            "NOTIFICATION",
+            "PROMOTION",
+            "GENERAL",
+            "SETTINGS",
+            "INVOICE",
+            "SUGGESTION"
+        )
+    )
     programed_send_date: datetime = timezone.now() + timezone.timedelta(
         minutes=10
     )
@@ -47,6 +58,7 @@ class ResetEmailFactory(EmailFactory):
 
     subject: str = settings.RESET_PASSWORD_EMAIL_SUBJECT
     header: str = settings.RESET_PASSWORD_EMAIL_HEADER
+    affair: str = "SETTINGS"
     to: User = factory.LazyAttribute(lambda object: object.instance.user)
     programed_send_date: datetime = None
 
@@ -65,6 +77,7 @@ class VerifyEmailFactory(EmailFactory):
 
     subject: str = settings.VERIFY_EMAIL_SUBJECT
     header: str = settings.VERIFY_EMAIL_HEADER
+    affair: str = "SETTINGS"
     to: User = factory.LazyAttribute(lambda object: object.instance)
     programed_send_date: datetime = None
 

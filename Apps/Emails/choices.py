@@ -6,3 +6,12 @@ class CommentType(models.TextChoices):
     BUG: str = "BUG"
     ERROR: str = "ERROR"
     OTHER: str = "OTHER"
+
+
+class EmailAffair(models.TextChoices):
+    NOTIFICATION: str = "NOTIFICATION"
+    PROMOTION: str = "PROMOTION"
+    GENERAL: str = "GENERAL"
+    SETTINGS: str = "SETTINGS"
+    INVOICE: str = "INVOICE"
+    SUGGESTION: str = "SUGGESTION"

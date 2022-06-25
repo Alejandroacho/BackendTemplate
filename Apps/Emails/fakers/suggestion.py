@@ -11,6 +11,7 @@ from Users.factories.user import UserFactory
 class SuggestionErrorFaker(SuggestionEmailFactory):
     subject: str = CommentType.SUGGESTION.value
     header: str = "Test header"
+    affair: str = "SUGGESTION"
     sent_date: datetime = None
     was_sent: bool = False
     was_read: bool = False

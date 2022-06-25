@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import factory
+import factory.fuzzy
 from django.db.models import Model
 from django.utils import timezone
 from Emails.factories.block import BlockFactory
@@ -13,6 +14,9 @@ class NotificationFactory(factory.django.DjangoModelFactory):
 
     subject: str = factory.Faker("sentence")
     header: str = factory.Faker("word")
+    affair: str = factory.fuzzy.FuzzyChoice(
+        ("NOTIFICATION", "PROMOTION", "GENERAL")
+    )
     is_test: bool = False
     programed_send_date: datetime = timezone.now() + timezone.timedelta(
         minutes=10

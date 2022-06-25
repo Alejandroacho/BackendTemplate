@@ -9,6 +9,7 @@ from Emails.fakers.block import BlockTestFaker
 class NotificationTestFaker(NotificationFactory):
     subject: str = "Test subject"
     header: str = "Test header"
+    affair: str = "PROMOTION"
     is_test: bool = True
     programed_send_date: datetime = None
     sent_date: datetime = None

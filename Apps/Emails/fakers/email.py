@@ -11,6 +11,7 @@ from Users.models import User
 class EmailTestFaker(EmailFactory):
     subject: str = "Test subject"
     header: str = "Test header"
+    affair: str = "GENERAL"
     is_test: bool = True
     to: User = factory.SubFactory(UserFactory)
     programed_send_date: datetime = None

@@ -19,6 +19,7 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
     subject: str = factory.LazyAttribute(
         lambda object: get_subject_for_suggestion(object.type, object.content)
     )
+    affair: str = "SUGGESTION"
 
     @factory.post_generation
     def header(self, create: bool, extracted: Model, **kwargs: dict) -> None:

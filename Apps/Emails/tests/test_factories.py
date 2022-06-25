@@ -36,6 +36,7 @@ class TestEmailFactories:
         assert Block.objects.count() == 1
         assert email.subject == "Test subject"
         assert email.header == "Test header"
+        assert email.affair is not None
         assert email.is_test is False
         assert email.to is not None
         assert email.programed_send_date is not None
@@ -70,6 +71,7 @@ class TestEmailFactories:
         assert email.subject == settings.RESET_PASSWORD_EMAIL_SUBJECT
         assert email.header == settings.RESET_PASSWORD_EMAIL_HEADER
         assert email.is_test is False
+        assert email.affair == "SETTINGS"
         assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
@@ -101,6 +103,7 @@ class TestEmailFactories:
         assert email.header == settings.VERIFY_EMAIL_HEADER
         assert email.is_test is False
         assert email.to == user
+        assert email.affair == "SETTINGS"
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block: Block = email.blocks.first()
@@ -216,6 +219,7 @@ class TestSuggestionFactory:
         assert Suggestion.objects.count() == 1
         assert Block.objects.count() == 1
         assert suggestion.subject == "ERROR"
+        assert suggestion.affair == "SUGGESTION"
         assert suggestion.header == (
             f"ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}"
         )
@@ -266,6 +270,7 @@ class TestNotificationFactory:
         assert Block.objects.count() == 1
         assert notification.subject == "Test subject"
         assert notification.header == "Test header"
+        assert notification.affair == "PROMOTION"
         assert notification.is_test is False
         assert notification.programed_send_date is not None
         assert notification.blocks is not None
@@ -289,6 +294,7 @@ class TestNotificationFactory:
         assert Block.objects.count() == 1
         assert notification.subject == "Test subject"
         assert notification.header == "Test header"
+        assert notification.affair in ["NOTIFICATION", "PROMOTION", "GENERAL"]
         assert notification.is_test is False
         assert notification.programed_send_date is not None
         assert notification.blocks is not None
