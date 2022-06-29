@@ -6,8 +6,9 @@ from django.db import models
 from django.db.models.fields import Field
 from django.db.models.fields.related import ForeignObject
 from django.utils import timezone
+from django_mysql.models import ListCharField
 from Emails import factories
-from Emails.choices import CommentType
+from Emails.choices import CommentType, EmailAffair
 from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
@@ -40,8 +41,8 @@ class Email(AbstractEmailClass):
         User, on_delete=models.CASCADE, null=False, related_name="to_user"
     )
 
-    def get_emails(self) -> list:
-        return [self.to.email]
+    def get_email(self) -> str:
+        return self.to.email
 
     def set_programed_send_date(self) -> None:
         programmed_date: datetime = self.programed_send_date
@@ -76,8 +77,8 @@ class Suggestion(AbstractEmailClass):
     )
     was_read: Field = models.BooleanField(default=False)
 
-    def get_emails(self) -> list:
-        return [settings.SUGGESTIONS_EMAIL]
+    def get_email(self) -> str:
+        return settings.SUGGESTIONS_EMAIL
 
 
 class Notification(AbstractEmailClass):
@@ -113,7 +114,18 @@ class Notification(AbstractEmailClass):
 
 class BlackList(models.Model):
     """
-    BlackList model, if an email is in this list, it will not be sent
+    BlackList model, if one user is in this list with given affair, the email
+    will not be sent
     """
 
-    email: Field = models.EmailField(unique=True)
+    user: ForeignObject = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="blacklist", unique=False
+    )
+    affairs: ListCharField = ListCharField(
+        base_field=models.CharField(
+            max_length=15,
+            choices=EmailAffair.choices
+        ),
+        size=5,
+        max_length=(5 * 15 + 4) # Base fields per sizer plus commas
+    )

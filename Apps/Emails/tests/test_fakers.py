@@ -105,4 +105,5 @@ class TestBlackListFakers:
         assert BlackList.objects.count() == 0
         black_list_item: BlackList = BlackListTestFaker()
         assert BlackList.objects.count() == 1
-        assert black_list_item.email == "emailinblacklist@test.com"
+        assert isinstance(black_list_item.user , User)
+        assert black_list_item.affairs is not None

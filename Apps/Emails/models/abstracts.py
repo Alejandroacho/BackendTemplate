@@ -21,7 +21,7 @@ class AbstractEmailFunctionClass(Model):
         return f"{self.id} | {self.subject}"
 
     @abstractmethod
-    def get_emails(self) -> list:
+    def get_email(self) -> str:
         raise ValueError("Abstract method, must be implemented in child class")
 
     def get_email_data(self) -> dict:
@@ -39,30 +39,27 @@ class AbstractEmailFunctionClass(Model):
         email: EmailMultiAlternatives = EmailMultiAlternatives(
             subject=self.subject,
             from_email=settings.EMAIL_HOST_USER,
-            bcc=self.get_emails(),
+            to=[self.get_email()],
         )
         email.attach_alternative(self.get_template(), "text/html")
         email.fail_silently = False
         return email
 
-    def check_if_email_is_in_blacklist(self) -> bool:
+    def check_if_email_and_type_is_in_blacklist(self) -> bool:
         blacklist: Model = apps.get_model("Emails", "Blacklist")
-        is_email_in_blacklist: bool = blacklist.objects.filter(
-            email__in=self.get_emails()
+        return blacklist.objects.filter(
+            user__email=self.get_email(), affairs__icontains=self.affair
         ).exists()
-        return is_email_in_blacklist
 
     def send(self) -> None:
-        is_email_in_blacklist: bool = self.check_if_email_is_in_blacklist()
+        is_email_in_blacklist: bool = self.check_if_email_and_type_is_in_blacklist()
         if not is_email_in_blacklist:
             email: EmailMultiAlternatives = self.get_email_object()
             email.send()
             self.sent_date: datetime = timezone.now()
             self.was_sent: bool = True
             self.save()
-            log_information("sent", self)
-        else:
-            raise ValueError("Email is in blacklist")
+        log_information(f"Sent: {self.was_sent}", self)
 
 
 class AbstractEmailClass(AbstractEmailFunctionClass):

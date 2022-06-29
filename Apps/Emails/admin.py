@@ -78,11 +78,11 @@ class SuggestionAdmin(admin.ModelAdmin):
 
 class BlackListAdmin(admin.ModelAdmin):
     model: Model = BlackList
-    list_display: tuple = ("id", "email")
-    list_display_links: tuple = ("id", "email")
+    list_display: tuple = ("id", "user", "affairs")
+    list_display_links: tuple = ("id", "user", "affairs")
     readonly_fields: list = ["id"]
-    search_fields: tuple = ("email", "id")
-    ordering: tuple = ("email",)
+    search_fields: tuple = ("user", "id", "affairs")
+    ordering: tuple = ("user", "affairs")
 
 
 class NotificationAdmin(admin.ModelAdmin):

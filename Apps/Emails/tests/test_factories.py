@@ -270,7 +270,7 @@ class TestNotificationFactory:
         assert Block.objects.count() == 1
         assert notification.subject == "Test subject"
         assert notification.header == "Test header"
-        assert notification.affair == "PROMOTION"
+        assert notification.affair is not None
         assert notification.is_test is False
         assert notification.programed_send_date is not None
         assert notification.blocks is not None

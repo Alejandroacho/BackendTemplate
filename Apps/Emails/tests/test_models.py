@@ -47,7 +47,7 @@ class TestEmailModel:
     def test_get_emails_abstract_class_fails(self) -> None:
         abstract: AbstractEmailClass = AbstractEmailClass()
         with pytest.raises(ValueError):
-            abstract.get_emails()
+            abstract.get_email()
 
     def test_email_attributes(self) -> None:
         email: Email = EmailFactory()
@@ -158,10 +158,9 @@ class TestEmailModel:
 
     def test_send_email_fails_because_is_in_blacklist(self) -> None:
         assert len(mail.outbox) == 0
-        email: Email = EmailFactory()
-        BlackListFactory(email=email.to.email)
-        with pytest.raises(ValueError):
-            email.send()
+        email: Email = EmailFactory(affair="GENERAL")
+        BlackListFactory(user=email.to, affairs="GENERAL")
+        email.send()
         assert email.was_sent is False
         assert len(mail.outbox) == 0
 
@@ -193,7 +192,7 @@ class TestSuggestionModel:
 
     def test_get_emails(self) -> None:
         email: Suggestion = SuggestionErrorFaker()
-        assert email.get_emails() == [settings.SUGGESTIONS_EMAIL]
+        assert email.get_email() == settings.SUGGESTIONS_EMAIL
 
     def test_send_suggestion(self) -> None:
         assert len(mail.outbox) == 0
@@ -266,4 +265,5 @@ class TestBlackListModel:
         black_list_item: BlackList = BlackListFactory()
         dict_keys: dict = black_list_item.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
-        assert "email" in attributes
+        assert "user_id" in attributes
+        assert "affairs" in attributes
