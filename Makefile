@@ -60,7 +60,7 @@ bash: ## Open a bash shell in the django container.
 
 .PHONY: shell
 shell: ## Open the shell_plus of django. You can modify the environment with SETTINGS parameter.
-	@${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
+	${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
 
 .PHONY: migrate
 migrate: ## Creates and applies the django migrations. You can modify the environment with SETTINGS parameter.
