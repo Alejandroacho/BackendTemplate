@@ -14,8 +14,13 @@ from Project.settings.labels_with_svg import user_label_with_icon
 """
 JET Documentation: https://django-jet-reboot.readthedocs.io/
 """
+
 X_FRAME_OPTIONS = 'ALLOWALL'
+
+
 JET_SIDE_MENU_COMPACT: bool = True
+
+
 JET_THEMES: list = [
     {
         "theme": "default",  # theme folder name
@@ -28,6 +33,8 @@ JET_THEMES: list = [
     {"theme": "light-blue", "color": "#5EADDE", "title": "Light Blue"},
     {"theme": "light-gray", "color": "#222", "title": "Light Gray"},
 ]
+
+
 JET_SIDE_MENU_ITEMS: list = [
     {
         "label": ("People"),
