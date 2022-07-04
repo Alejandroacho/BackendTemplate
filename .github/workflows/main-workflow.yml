@@ -33,7 +33,7 @@ jobs:
     - name: ⏳ Wait for the environment to get up
       run: make wait-db
     - name: ✅ Test
-      run: make test
+      run: make non-interactive-test
 
   Docker-Tag:
     needs: [Testing]
