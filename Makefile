@@ -127,7 +127,7 @@ endif
 
 .PHONY: non-interactive-test
 non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
-	@make create-test-db
+	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
 	@${NON_INTERACTIVE_COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
 
 .PHONY: cover-test
