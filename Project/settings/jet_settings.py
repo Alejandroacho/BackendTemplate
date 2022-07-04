@@ -15,6 +15,7 @@ from Project.settings.labels_with_svg import user_label_with_icon
 JET Documentation: https://django-jet-reboot.readthedocs.io/
 """
 
+
 X_FRAME_OPTIONS = 'ALLOWALL'
 
 
