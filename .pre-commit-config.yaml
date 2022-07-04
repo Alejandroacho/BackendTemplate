@@ -5,7 +5,7 @@ repos:
       - id: lint
         name: Lint code
         description: Any color you like
-        entry: black Apps Project
+        entry: black .
         args: [
           --config=./Project/settings/pyproject.toml,
           --check
@@ -21,7 +21,7 @@ repos:
       - id: imports
         name: Sort imports
         description: Isort your imports, so you don't have to
-        entry: isort Apps Project
+        entry: isort .
         args: [
           --settings-path=./Project/settings/pyproject.toml,
           --check
