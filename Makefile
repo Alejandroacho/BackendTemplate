@@ -7,7 +7,8 @@ DBPASSWORD ?= password
 HOST ?= "127.0.0.1"
 
 ## Variables to make targets more readable
-COMMAND = docker exec -i django-app bash -c
+COMMAND = docker exec -it django-app bash -c
+NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
@@ -123,6 +124,11 @@ ifeq (${APP},)
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
+
+.PHONY: non-interactive-test
+non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
+	@make create-test-db
+	@${NON_INTERACTIVE_COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
 
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
