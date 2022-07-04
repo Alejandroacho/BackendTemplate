@@ -91,7 +91,6 @@ SPECTACULAR_SETTINGS: dict = {
     "SCHEMA_PATH_PREFIX": r"/api/",
 }
 
-
 ROOT_URLCONF: str = "Project.urls"
 
 TEMPLATES: list = [
@@ -180,7 +179,6 @@ STATIC_URL: str = "/static/"
 
 MEDIA_ROOT: str = os.path.join(BASE_DIR, "Project/")
 MEDIA_URL: str = "/media/"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
