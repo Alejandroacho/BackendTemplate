@@ -5,12 +5,12 @@ repos:
       - id: lint
         name: Lint code
         description: Any color you like
-        entry: black App Project
+        entry: black Apps Project
         args: [
           --config=./Project/settings/pyproject.toml,
           --check
         ]
-        files: ^App/ ^Project/
+        files: ^./
         exclude: /migrations/*
         require_serial: true
         additional_dependencies: ['black==22.3.0']
@@ -21,12 +21,12 @@ repos:
       - id: imports
         name: Sort imports
         description: Isort your imports, so you don't have to
-        entry: isort App Project
+        entry: isort Apps Project
         args: [
           --settings-path=./Project/settings/pyproject.toml,
           --check
         ]
-        files: ^App/ ^Project/
+        files: ^./
         exclude: /migrations/*
         require_serial: true
         additional_dependencies: ['isort==5.10.1']
