@@ -13,17 +13,17 @@ The environment we are looking to build is one that uses Django as a python fram
 
 All we be in one Docker container that will be already setted up to just start coding the project.
 
-## Table of Contents  
-1. [Requirements](#requirements)  
-2. [Nice to have](#nicetohave)  
-3. [Before starting](#beforestarting)  
-4. [Instructions](#instructions)   
-5. [Observations](#observations)    
+## Table of Contents
+1. [Requirements](#requirements)
+2. [Nice to have](#nicetohave)
+3. [Before starting](#beforestarting)
+4. [Instructions](#instructions)
+5. [Observations](#observations)
 6. [Interaction](#interaction)
 7. [Versions used](#versions)
 8. [Useful guides](#usefullguides)
-      
-      8.1. [Custum user model](#customusermodel)   
+
+      8.1. [Custum user model](#customusermodel)
 
 <a name="requirements"/>
 
@@ -49,8 +49,8 @@ All we be in one Docker container that will be already setted up to just start c
 - [Flower documentation.](https://flower.readthedocs.io/en/latest/)
 - [Grafana documentation.](https://grafana.com/docs/)
 - [Prometheus documentation.](https://prometheus.io/docs/introduction/overview/)
-- [OpenApi (swagger) documentation.](https://swagger.io/specification/) 
-- [ReDoc documentation.](https://redoc.ly/docs) 
+- [OpenApi (swagger) documentation.](https://swagger.io/specification/)
+- [ReDoc documentation.](https://redoc.ly/docs)
 
 <a name="beforestarting"/>
 
@@ -66,9 +66,9 @@ You can change project name to your actual app name, just take in mind that you 
 ## Instructions
 
 1. Go to root content folder.
-2. Bring up the docker container running:  
+2. Bring up the docker container running:
     ```make up```
-     
+
 4. That's all!
 
     Django admin will be available on: [http://localhost:8000/admin](http://localhost:8000/admin)
@@ -76,9 +76,9 @@ You can change project name to your actual app name, just take in mind that you 
     Django app will be available on: [http://localhost:8000/](http://localhost:8000/)
 
     Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
-    
+
     Grafana monitor will be available on: [http://localhost:3000](http://localhost:3000)
-    
+
     Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
 
     Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger](http://localhost:8000/doc/swagger/)
@@ -98,7 +98,7 @@ Or acces into the bash (you can do it running ```make bash```) and run:
 
     python manage.py migrate
     python manage.py createsuperuser
-    
+
 
 Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
 
@@ -116,10 +116,10 @@ To test your django applications you must run:
 Or in the conteiner bash:
 
     python manage.py test
-    
+
 The first time you run a test, you probably will get an error message saying that your user does not have permissions to interact with the database.
 To fix that, you must enter you database mysql container as a root running something like this:
-    
+
     USER=root PASSWORD=password make database
 
 Or:
@@ -145,11 +145,11 @@ Notice that Django admin is customizable due the use of [Django-Jazzmin](https:/
 All the interaction goes through ```makefile```, but you can interact with the containers runing the commands as usual, for example, running manually the comands in the ```makefile```.
 
 You can see docker logs just running ```docker-compose up```, but this will attach the console directly to the container process so if you close it, you will set down the docker container too. To avoid this you can run the container detached to console running:
-  
+
     make up -d
 
 To see container logs run:
-  
+
     make logs
 
 To access container bash to interact directly with the container run:
