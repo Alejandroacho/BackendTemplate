@@ -62,11 +62,11 @@ class SuggestionAdmin(admin.ModelAdmin):
     list_filter: tuple = ("subject", "user", "was_read", "was_sent")
 
     fieldsets: tuple = (
-        ("Content", {"fields": ("id", "user", "subject", "header")}),
+        ("Content", {"fields": ("id", "affair", "subject", "header")}),
         ("Blocks", {"fields": ("blocks",)}),
         (
             "Configuration",
-            {"fields": ("to", "was_read", "was_sent")},
+            {"fields": ("user", "was_read", "was_sent")},
         ),
         ("Sent information", {"fields": ("sent_date",)}),
     )
