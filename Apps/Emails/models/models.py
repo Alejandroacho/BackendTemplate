@@ -6,9 +6,12 @@ from django.db import models
 from django.db.models.fields import Field
 from django.db.models.fields.related import ForeignObject
 from django.utils import timezone
+from django.utils.timezone import timedelta
+from django.utils.timezone import now
 from django_mysql.models import ListCharField
 from Emails import factories
-from Emails.choices import CommentType, EmailAffair
+from Emails.choices import CommentType
+from Emails.choices import EmailAffair
 from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
@@ -45,14 +48,11 @@ class Email(AbstractEmailClass):
         return self.to.email
 
     def set_programed_send_date(self) -> None:
-        programmed_date: datetime = self.programed_send_date
-        if programmed_date and programmed_date <= timezone.now():
+        if self.programed_send_date and self.programed_send_date <= now():
             message: str = "Programed send date must be future"
             raise ValidationError(message, code="invalid")
-        if not programmed_date:
-            five_minutes_ahead: datetime = timezone.now() + timezone.timedelta(
-                minutes=5
-            )
+        if not self.programed_send_date:
+            five_minutes_ahead: datetime = now() + timedelta(minutes=5)
             self.programed_send_date = five_minutes_ahead
 
     def save(self, *args: tuple, **kwargs: dict) -> None:
@@ -91,14 +91,16 @@ class Notification(AbstractEmailClass):
     programed_send_date: Field = models.DateTimeField(null=True)
 
     def send(self) -> None:
-        if self.is_test:
-            self.create_email(to=EmailTestUserFaker())
-        else:
-            for user in User.objects.all():
-                self.create_email(user)
+        if not self.is_test:
+            self.create_email_for_every_user()
+        self.create_email(to=EmailTestUserFaker())
         self.sent_date: datetime = timezone.now()
         self.was_sent: bool = True
         self.save()
+
+    def create_email_for_every_user(self) -> None:
+        for user in User.objects.all():
+            self.create_email(user)
 
     def create_email(self, to: User) -> None:
         factories.email.EmailFactory(

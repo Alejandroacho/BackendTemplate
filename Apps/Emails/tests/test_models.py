@@ -233,9 +233,10 @@ class TestNotificationModel:
         assert notification.sent_date is None
         assert notification.was_sent is False
         notification.send()
-        assert Email.objects.all().count() == 2
+        assert Email.objects.all().count() == 3
         assert Email.objects.first().to == first_user
-        assert Email.objects.last().to == second_user
+        assert Email.objects.all()[1].to == second_user
+        assert Email.objects.last().to == EmailTestUserFaker()
         assert notification.sent_date is not None
         assert notification.was_sent is True
 
