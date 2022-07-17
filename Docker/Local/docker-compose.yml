@@ -8,15 +8,14 @@ services:
       dockerfile: ./Docker/Local/Dockerfile
     image: &app app
     restart: always
-    command: python3 /Project/start.py --service Django-App
+    command: python3 /App/Project/start.py --service Django-App
     env_file: &envfile
       - ../../Envs/local.env
     ports:
       - 8000:8000
     volumes:
-      - ../../Apps:/Apps
-      - ../../Project:/Project
-      - ../../Requirements:/Requirements
+      - ../../Apps:/App/Apps
+      - ../../Project:/App/Project
     depends_on:
       - database
 
@@ -51,7 +50,7 @@ services:
     image: *app
     restart: always
     env_file: *envfile
-    command: python3 /Project/start.py --service Celery-Worker
+    command: python3 /App/Project/start.py --service Celery-Worker
     volumes:
       - ../../Apps:/Apps
       - ../../Project:/Project
@@ -65,7 +64,7 @@ services:
       dockerfile: ./Docker/Local/Dockerfile
     image: *app
     env_file: *envfile
-    command: python3 /Project/start.py --service Celery-Beat
+    command: python3 /App/Project/start.py --service Celery-Beat
     volumes:
       - ../../Apps:/Apps
       - ../../Project:/Project
