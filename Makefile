@@ -10,7 +10,7 @@ HOST ?= "127.0.0.1"
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
+DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml --env-file ./Docker/${ENV}/docker.env
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
 CODE_FOLDERS = Apps Project

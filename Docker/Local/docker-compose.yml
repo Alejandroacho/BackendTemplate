@@ -5,10 +5,10 @@ services:
     container_name: django-app
     build:
       context: ../../
-      dockerfile: ./Docker/Local/Dockerfile
+      dockerfile: ${DOCKERFILE_PATH}
     image: &app app
     restart: always
-    command: python3 /App/Project/start.py --service Django-App
+    command: ${START_DJANGO}
     env_file: &envfile
       - ../../Envs/local.env
     ports:
@@ -26,7 +26,7 @@ services:
     restart: always
     env_file: *envfile
     volumes:
-      - ~/.mdbdata/BackendTemplate:/var/lib/mysql
+      - ${DATA_FOLDER}:/var/lib/mysql
     ports:
       - 3306:3306
     expose:
@@ -34,11 +34,11 @@ services:
 
   redis:
     container_name: redis
-    image: redis:6.2.6
+    image: redis:7.0.3
     ports:
       - 6378:6379
     volumes:
-      - ~/.mdbdata/BackendTemplate/redisdata:/data
+      - ${DATA_FOLDER}/redisdata:/data
     depends_on:
       - database
 
@@ -46,14 +46,11 @@ services:
     container_name: celery-worker
     build:
       context: ../../
-      dockerfile: ./Docker/Local/Dockerfile
+      dockerfile: ${DOCKERFILE_PATH}
     image: *app
     restart: always
     env_file: *envfile
-    command: python3 /App/Project/start.py --service Celery-Worker
-    volumes:
-      - ../../Apps:/Apps
-      - ../../Project:/Project
+    command: ${START_CELERY_WORKER}
     depends_on:
       - rabbitmq
 
@@ -61,13 +58,10 @@ services:
     container_name: celery-beat
     build:
       context: ../../
-      dockerfile: ./Docker/Local/Dockerfile
+      dockerfile: ${DOCKERFILE_PATH}
     image: *app
     env_file: *envfile
-    command: python3 /App/Project/start.py --service Celery-Beat
-    volumes:
-      - ../../Apps:/Apps
-      - ../../Project:/Project
+    command: ${START_CELERY_BEAT}
     depends_on:
       - celery-worker
 
@@ -83,47 +77,36 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3-management
+    image: rabbitmq:3.9.21
     env_file: *envfile
     ports:
       - 5672:5672
       - 15672:15672
     volumes:
-      - ~/.mdbdata/BackendTemplate/rabbitmq_data:/data
+      - ${DATA_FOLDER}/rabbitmq_data:/data
     depends_on:
       - database
 
   grafana:
     container_name: grafana
-    image: grafana/grafana:8.3.3
+    image: grafana/grafana:9.0.3
     user: root
     ports:
       - 3000:3000
     volumes:
-      - ~/.mdbdata/BackendTemplate/grafana_data:/var/lib/grafana
-      - ~/.mdbdata/BackendTemplate/grafana/provisioning/:/etc/grafana/provisioning/
+      - ${DATA_FOLDER}/grafana_data:/var/lib/grafana
+      - ${DATA_FOLDER}/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
     depends_on:
       - database
 
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v2.1.0
+    image: prom/prometheus:v2.37.0
     volumes:
-      - ../../Project/settings/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${PROMETHEUS_YML}:/etc/prometheus/prometheus.yml
     command: --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
-    depends_on:
-      - database
-
-  cloudbeaver:
-    container_name: cloudbeaver
-    image: dbeaver/cloudbeaver
-    restart: always
-    volumes:
-      - ~/.mdbdata/BackendTemplate/cloudbeaver:/opt/cloudbeaver/workspace
-    ports:
-      - 8081:8978
     depends_on:
       - database
