@@ -17,7 +17,8 @@ services:
       - ../../Apps:/App/Apps
       - ../../Project:/App/Project
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   database:
     container_name: database
@@ -31,6 +32,11 @@ services:
       - 3306:3306
     expose:
       - 3306
+    healthcheck:
+      test: ${MYSQL_HEALTH_CHECK}
+      interval: 1s
+      timeout: 10s
+      retries: 120
 
   redis:
     container_name: redis
@@ -85,7 +91,8 @@ services:
     volumes:
       - ${DATA_FOLDER}/rabbitmq_data:/data
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   grafana:
     container_name: grafana
@@ -98,7 +105,8 @@ services:
       - ${DATA_FOLDER}/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   prometheus:
     container_name: prometheus
@@ -109,4 +117,5 @@ services:
     ports:
       - 9090:9090
     depends_on:
-      - database
+      database:
+        condition: service_healthy
