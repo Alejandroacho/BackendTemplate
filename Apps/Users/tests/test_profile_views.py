@@ -22,7 +22,7 @@ def client() -> APIClient:
 
 @pytest.fixture(scope="class")
 def base64_image() -> bytes:
-    image_file: BufferedReader = open("Project/static/logo.png", "rb")
+    image_file: BufferedReader = open("Apps/Static/logo.png", "rb")
     image_base64: bytes = base64.b64encode(image_file.read())
     image_file.close()
     return image_base64
