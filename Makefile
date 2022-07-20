@@ -21,7 +21,7 @@ TOML_PATH = ./Project/settings/pyproject.toml
 DISABLE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning -W ignore::DeprecationWarning
 PYTEST_SETTINGS = --reuse-db -p no:cacheprovider --ds=Project.settings.django.test_settings ${DISABLE_WARNINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
-HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
+HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html:./Project/.htmlconv
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
