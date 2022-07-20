@@ -50,19 +50,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - id: release
-        if: ${{ github.ref == 'refs/heads/staging' }}
         name: 🔏 Generates release and tag for code versioning
         uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: patch
-          tag_prefix: v
-          use_github_release_notes: true
-      - id: release
-        if: ${{ github.ref == 'refs/heads/master' }}
-        name: 🔏 Generates release and tag for code versioning
-        uses: rymndhng/release-on-push-action@master
-        with:
-          bump_version_scheme: minor
           tag_prefix: v
           use_github_release_notes: true
       - name: 📣 Check versioning
