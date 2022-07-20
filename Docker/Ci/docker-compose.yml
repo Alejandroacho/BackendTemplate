@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: django-app
+    build:
+      context: ../../
+      dockerfile: ${DOCKERFILE_PATH}
+    image: app
+    restart: always
+    command: ${START_DJANGO}
+    env_file: &envfile
+      - ../../Envs/local.env
+    ports:
+      - 8000:8000
+    volumes:
+      - ../../Apps:/App/Apps
+      - ../../Project:/App/Project
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    container_name: database
+    platform: linux/x86_64
+    image: ${MYSQL}
+    restart: always
+    env_file: *envfile
+    volumes:
+      - ${DATA_FOLDER}:/var/lib/mysql
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    healthcheck:
+      test: ${MYSQL_HEALTH_CHECK}
+      interval: 1s
+      timeout: 10s
+      retries: 120
