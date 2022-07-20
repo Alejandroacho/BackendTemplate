@@ -69,3 +69,26 @@ jobs:
         run: |
           echo "Got tag name ${{ steps.release.outputs.tag_name }}"
           echo "Got release version ${{ steps.release.outputs.version }}"
+
+  Deploy:
+    needs: [Github-Versioning]
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
+    # - name: 🚁 Deploy on PRE
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on PRE environment
+    # - name: 🛫 Deploy on Staging
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on STAGING environment
+    # - name: 🚀 Deploy on Production
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on PRODUCTION environment
+
+  Done:
+    needs: [Deploy]
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🎉 Congratulations
+      run: echo "Everything is updated! 🎉"
