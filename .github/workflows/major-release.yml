@@ -1,0 +1,23 @@
+name: Major release
+
+on:
+  workflow_dispatch
+
+jobs:
+  Versioning:
+    needs: [Docker-Tag]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        name: 🔏 Generates release and tag for a major release
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: major
+          tag_prefix: v
+          use_github_release_notes: true
+      - name: 📣 Check versioning
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
