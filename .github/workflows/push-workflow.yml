@@ -44,6 +44,7 @@ jobs:
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
   Github-Versioning:
+    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [Docker-Tag]
     runs-on: ubuntu-latest
     env:
