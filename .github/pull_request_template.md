@@ -5,5 +5,8 @@
   Expected tasks to do to solve the issue/bug/feature, modified from the
   issue if needed.
 -->
+- [ ] Task 1
+- [ ] Task 2
+
 ## 🚀 Solution
 <!---Detailed explanation on how it was solved and other comments.-->
